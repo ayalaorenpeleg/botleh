@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>בוטל'ה · ברכות בהשראת נאות קדומים</title>
+<meta name="description" content="בוטל'ה - עוזר AI ליצירת ברכות ומכתבים בהשראת נאות קדומים, שמורת הטבע הלאומית של טבע הארץ במקורות ישראל.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Assistant:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f6f1e7;
+    --cream-2:#efe7d6;
+    --plum:#4b2e52;
+    --plum-dark:#2f1c34;
+    --sage:#7c8b5c;
+    --sage-light:#e4e8d9;
+    --gold:#b8934a;
+    --ink:#332536;
+    --radius:18px;
+    --shadow: 0 10px 30px rgba(75,46,82,0.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Assistant', sans-serif;
+    min-height:100vh;
+    line-height:1.6;
+  }
+  .wrap{
+    max-width:640px;
+    margin:0 auto;
+    padding:48px 20px 64px;
+  }
+  header.hero{
+    text-align:center;
+    margin-bottom:8px;
+  }
+  h1{
+    font-family:'Frank Ruhl Libre', serif;
+    font-weight:700;
+    font-size:clamp(2.2rem, 6vw, 3rem);
+    color:var(--plum);
+    margin:0 0 6px;
+  }
+  .subtitle{
+    font-size:1.05rem;
+    color:var(--plum-dark);
+    margin:0 0 4px;
+    font-weight:600;
+  }
+  .credit{
+    font-size:0.92rem;
+    color:var(--sage);
+    font-style:italic;
+    margin:2px 0 0;
+  }
+
+  /* signature botanical divider */
+  .branch{
+    display:block;
+    width:180px;
+    height:auto;
+    margin:22px auto 30px;
+  }
+
+  .card{
+    background:#fffdf8;
+    border:1px solid var(--sage-light);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:32px 28px;
+  }
+
+  label{
+    display:block;
+    font-weight:600;
+    color:var(--plum-dark);
+    margin:0 0 6px;
+    font-size:0.95rem;
+  }
+  .field{ margin-bottom:20px; }
+  select, input[type="text"], textarea{
+    width:100%;
+    font-family:'Assistant', sans-serif;
+    font-size:1rem;
+    padding:12px 14px;
+    border-radius:12px;
+    border:1.5px solid var(--sage-light);
+    background:var(--cream);
+    color:var(--ink);
+    outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  select:focus, input[type="text"]:focus, textarea:focus{
+    border-color:var(--sage);
+    box-shadow:0 0 0 3px rgba(124,139,92,0.18);
+  }
+  textarea{ resize:vertical; min-height:70px; }
+  .hint{ font-size:0.82rem; color:#8a7f8f; margin-top:4px; }
+
+  button.submit{
+    width:100%;
+    padding:15px 18px;
+    font-family:'Assistant', sans-serif;
+    font-size:1.05rem;
+    font-weight:700;
+    color:#fff;
+    background:var(--plum);
+    border:none;
+    border-radius:999px;
+    cursor:pointer;
+    transition:transform .12s ease, background .15s ease, box-shadow .15s ease;
+    box-shadow:0 6px 18px rgba(75,46,82,0.28);
+  }
+  button.submit:hover{ background:var(--plum-dark); transform:translateY(-1px); }
+  button.submit:disabled{ opacity:0.6; cursor:default; transform:none; }
+
+  .spinner{
+    display:inline-block;
+    width:16px;height:16px;
+    border:2.5px solid rgba(255,255,255,0.4);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+    vertical-align:middle;
+    margin-inline-end:8px;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .error-box{
+    margin-top:18px;
+    padding:14px 16px;
+    background:#fbeaea;
+    border:1px solid #e3b8b8;
+    border-radius:12px;
+    color:#7a2f2f;
+    font-size:0.95rem;
+    text-align:center;
+    display:none;
+  }
+
+  .result{
+    margin-top:32px;
+    display:none;
+  }
+  .result-card{
+    background:var(--sage-light);
+    border:1px solid var(--sage);
+    border-radius:var(--radius);
+    padding:28px 26px;
+    position:relative;
+  }
+  .result-card::before{
+    content:"❝";
+    position:absolute;
+    top:6px;
+    right:18px;
+    font-size:2.4rem;
+    color:var(--sage);
+    opacity:0.5;
+    font-family:'Frank Ruhl Libre', serif;
+  }
+  .result-img{
+    width:100%;
+    border-radius:14px;
+    margin-bottom:18px;
+    display:none;
+  }
+  .result-text{
+    font-family:'Frank Ruhl Libre', serif;
+    font-size:1.15rem;
+    color:var(--plum-dark);
+    white-space:pre-wrap;
+    line-height:1.9;
+  }
+  .result-actions{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+    flex-wrap:wrap;
+  }
+  .btn-secondary{
+    flex:1;
+    min-width:140px;
+    padding:11px 16px;
+    font-family:'Assistant', sans-serif;
+    font-size:0.95rem;
+    font-weight:600;
+    color:var(--plum);
+    background:#fff;
+    border:1.5px solid var(--plum);
+    border-radius:999px;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  .btn-secondary:hover{ background:var(--plum); color:#fff; }
+
+  footer{
+    text-align:center;
+    margin-top:56px;
+    font-size:0.85rem;
+    color:#9a8fa3;
+  }
+  footer a{ color:var(--sage); text-decoration:none; }
+  footer a:hover{ text-decoration:underline; }
+
+  @media (max-width:480px){
+    .card{ padding:26px 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <h1>בוטל'ה</h1>
+    <p class="subtitle">ברכות ומכתבים בהשראת נאות קדומים — השמורה הלאומית של טבע הארץ במקורות ישראל</p>
+    <p class="credit">לכבודה של שרהל'ה אורן, אשפית בכתיבת ברכות ותכנים ברוח נאות קדומים</p>
+  </header>
+
+  <!-- signature botanical divider: olive branch line art -->
+  <svg class="branch" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M10 30 C 60 10, 140 10, 190 30" stroke="#b8934a" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M40 24 C 44 16, 52 14, 56 18 C 52 24, 44 26, 40 24 Z" fill="#7c8b5c"/>
+    <path d="M70 32 C 74 24, 82 22, 86 26 C 82 32, 74 34, 70 32 Z" fill="#7c8b5c"/>
+    <path d="M100 20 C 104 12, 112 10, 116 14 C 112 20, 104 22, 100 20 Z" fill="#7c8b5c"/>
+    <path d="M130 30 C 134 22, 142 20, 146 24 C 142 30, 134 32, 130 30 Z" fill="#7c8b5c"/>
+    <path d="M160 22 C 164 14, 172 12, 176 16 C 172 22, 164 24, 160 22 Z" fill="#7c8b5c"/>
+    <circle cx="115" cy="32" r="4" fill="#4b2e52"/>
+    <circle cx="128" cy="20" r="3" fill="#4b2e52"/>
+  </svg>
+
+  <main class="card">
+    <form id="botleh-form">
+
+      <div class="field">
+        <label for="eventType">סוג הברכה / המכתב</label>
+        <select id="eventType" required>
+          <option value="" disabled selected>בחרי אפשרות</option>
+          <option value="יום הולדת">יום הולדת</option>
+          <option value="יום נישואין">יום נישואין</option>
+          <option value="חתונה">חתונה</option>
+          <option value="לידה">לידה</option>
+          <option value="בר/בת מצווה">בר/בת מצווה</option>
+          <option value="מכתב תודה">מכתב תודה</option>
+          <option value="מכתב סליחה">מכתב סליחה</option>
+          <option value="השתתפות בצער">השתתפות בצער</option>
+          <option value="אירוע משמח אחר">אירוע משמח אחר</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="recipientName">שם מושא הברכה</label>
+        <input type="text" id="recipientName" placeholder="לדוגמה: יואב" required>
+      </div>
+
+      <div class="field">
+        <label for="relationship">הקשר בינך למושא הברכה</label>
+        <input type="text" id="relationship" placeholder="לדוגמה: בן שלי, בת זוג, ידיד" required>
+      </div>
+
+      <div class="field">
+        <label for="personalDetail">פרט אישי או תוכן לשילוב (לא חובה)</label>
+        <textarea id="personalDetail" placeholder="לדוגמה: ילד סקרן שאוהב לטייל בטבע"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="senderName">השם שלך — חתימה על הברכה</label>
+        <input type="text" id="senderName" placeholder="לדוגמה: אמא" required>
+      </div>
+
+      <button type="submit" class="submit" id="submitBtn">צרי לי ברכה ✨</button>
+
+      <div class="error-box" id="errorBox"></div>
+    </form>
+
+    <div class="result" id="resultBlock">
+      <div class="result-card">
+        <img id="resultImg" class="result-img" alt="איור נלווה לברכה">
+        <div class="result-text" id="resultText"></div>
+        <div class="result-actions">
+          <button type="button" class="btn-secondary" id="copyBtn">העתקי טקסט</button>
+          <button type="button" class="btn-secondary" id="againBtn">ברכה נוספת</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    בוטל'ה נבנה בהשראת נאות קדומים — השמורה הלאומית של טבע הארץ במקורות ישראל<br>
+    <a href="https://www.n-k.org.il/" target="_blank" rel="noopener">n-k.org.il</a>
+  </footer>
+
+</div>
+
+<script>
+  // ==== CONFIGURATION ====
+  // Replace with the real n8n Production Webhook URL once the workflow is Active.
+  const WEBHOOK_URL = "https://YOUR-N8N-INSTANCE/webhook/botleh-chat";
+  // ========================
+
+  function getOrCreateId(key){
+    let v = localStorage.getItem(key);
+    if(!v){
+      v = (crypto.randomUUID ? crypto.randomUUID() : (Date.now()+'-'+Math.random().toString(16).slice(2)));
+      localStorage.setItem(key, v);
+    }
+    return v;
+  }
+  const userId = getOrCreateId('botleh_user_id');
+  const chatId = getOrCreateId('botleh_chat_id');
+
+  const form = document.getElementById('botleh-form');
+  const submitBtn = document.getElementById('submitBtn');
+  const errorBox = document.getElementById('errorBox');
+  const resultBlock = document.getElementById('resultBlock');
+  const resultText = document.getElementById('resultText');
+  const resultImg = document.getElementById('resultImg');
+
+  function setLoading(isLoading){
+    submitBtn.disabled = isLoading;
+    submitBtn.innerHTML = isLoading
+      ? '<span class="spinner"></span> יוצרת ברכה...'
+      : 'צרי לי ברכה ✨';
+  }
+
+  function showError(msg){
+    errorBox.textContent = msg;
+    errorBox.style.display = 'block';
+  }
+  function hideError(){
+    errorBox.style.display = 'none';
+  }
+
+  async function requestGreeting(payload){
+    hideError();
+    setLoading(true);
+    resultBlock.style.display = 'none';
+    try{
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if(!res.ok){
+        throw new Error('שגיאת שרת (' + res.status + ')');
+      }
+      const data = await res.json();
+      resultText.textContent = data.greeting || 'לא התקבלה ברכה מהשרת.';
+      if(data.imageUrl){
+        resultImg.src = data.imageUrl;
+        resultImg.style.display = 'block';
+      } else {
+        resultImg.style.display = 'none';
+      }
+      resultBlock.style.display = 'block';
+      resultBlock.scrollIntoView({ behavior:'smooth', block:'start' });
+    }catch(err){
+      showError('משהו השתבש בדרך. נסו שוב עוד רגע. (' + err.message + ')');
+    }finally{
+      setLoading(false);
+    }
+  }
+
+  let lastPayload = null;
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    lastPayload = {
+      eventType: document.getElementById('eventType').value,
+      recipientName: document.getElementById('recipientName').value.trim(),
+      relationship: document.getElementById('relationship').value.trim(),
+      personalDetail: document.getElementById('personalDetail').value.trim(),
+      senderName: document.getElementById('senderName').value.trim(),
+      userId, chatId
+    };
+    requestGreeting(lastPayload);
+  });
+
+  document.getElementById('againBtn').addEventListener('click', function(){
+    if(lastPayload) requestGreeting(lastPayload);
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', function(){
+    navigator.clipboard.writeText(resultText.textContent).then(function(){
+      const btn = document.getElementById('copyBtn');
+      const original = btn.textContent;
+      btn.textContent = 'הועתק ✓';
+      setTimeout(function(){ btn.textContent = original; }, 1600);
+    });
+  });
+</script>
+</body>
+</html>
