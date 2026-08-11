@@ -336,36 +336,42 @@
     errorBox.style.display = 'none';
   }
 
-  async function requestGreeting(payload){
-    hideError();
-    setLoading(true);
-    resultBlock.style.display = 'none';
-    try{
-      const res = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if(!res.ok){
-        throw new Error('שגיאת שרת (' + res.status + ')');
+async function requestGreeting(payload){
+  hideError();
+  setLoading(true);
+  resultBlock.style.display = 'none';
+  try{
+    const res = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    let data = null;
+    try{ data = await res.json(); }catch(parseErr){ data = null; }
+    if(data && data.error){
+      if(data.errorType === 'ai_service'){
+        throw new Error(data.message || 'תקלה שנובעת מתקלה במודל ה-AI. נסי שוב בעוד כמה רגעים.');
       }
-      const data = await res.json();
-      resultText.textContent = data.greeting || 'לא התקבלה ברכה מהשרת.';
-      if(data.imageUrl){
-        resultImg.src = data.imageUrl;
-        resultImg.style.display = 'block';
-      } else {
-        resultImg.style.display = 'none';
-      }
-      resultBlock.style.display = 'block';
-      resultBlock.scrollIntoView({ behavior:'smooth', block:'start' });
-    }catch(err){
-      showError('משהו השתבש בדרך. נסו שוב עוד רגע. (' + err.message + ')');
-    }finally{
-      setLoading(false);
+      throw new Error(data.message || 'תקלה זמנית אצלנו באתר. נסי שוב עוד רגע.');
     }
+    if(!res.ok || !data){
+      throw new Error('תקלה זמנית אצלנו באתר. נסי שוב עוד רגע' + (res.status ? ' (קוד ' + res.status + ')' : '') + '.');
+    }
+    resultText.textContent = data.greeting || 'לא התקבלה ברכה מהשרת.';
+    if(data.imageUrl){
+      resultImg.src = data.imageUrl;
+      resultImg.style.display = 'block';
+    } else {
+      resultImg.style.display = 'none';
+    }
+    resultBlock.style.display = 'block';
+    resultBlock.scrollIntoView({ behavior:'smooth', block:'start' });
+  }catch(err){
+    showError(err.message);
+  }finally{
+    setLoading(false);
   }
-
+}
   let lastPayload = null;
 
   form.addEventListener('submit', function(e){
