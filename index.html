@@ -198,6 +198,7 @@
     transition:background .15s ease, color .15s ease;
   }
   .btn-secondary:hover{ background:var(--plum); color:#fff; }
+  .btn-secondary.btn-small{ flex:none; min-width:auto; padding:8px 20px; font-size:0.85rem; }
 
   footer{
     text-align:center;
@@ -218,7 +219,7 @@
 
   <header class="hero">
     <h1>בוטל'ה</h1>
-    <p class="subtitle">ברכות ומכתבים בהשראת נאות קדומים — השמורה הלאומית של טבע הארץ במקורות ישראל</p>
+    <p class="subtitle">ברכות ומכתבים בהשראת נאות קדומים - השמורה הלאומית של טבע הארץ במקורות ישראל</p>
     <p class="credit">לכבודה של שרהל'ה אורן, אשפית בכתיבת ברכות ותכנים ברוח נאות קדומים</p>
   </header>
 
@@ -269,7 +270,7 @@
       </div>
 
       <div class="field">
-        <label for="senderName">השם שלך — חתימה על הברכה</label>
+        <label for="senderName">השם שלך - חתימה על הברכה</label>
         <input type="text" id="senderName" placeholder="לדוגמה: אמא" required>
       </div>
 
@@ -283,15 +284,14 @@
         <img id="resultImg" class="result-img" alt="איור נלווה לברכה">
         <div class="result-text" id="resultText"></div>
         <div class="result-actions">
-          <button type="button" class="btn-secondary" id="copyBtn">העתקי טקסט</button>
-          <button type="button" class="btn-secondary" id="againBtn">ברכה נוספת</button>
+          <button type="button" class="btn-secondary btn-small" id="copyBtn">העתקי טקסט</button>
         </div>
       </div>
     </div>
   </main>
 
   <footer>
-    בוטל'ה נבנה בהשראת נאות קדומים — השמורה הלאומית של טבע הארץ במקורות ישראל<br>
+    בוטל'ה נבנה בהשראת נאות קדומים - השמורה הלאומית של טבע הארץ במקורות ישראל<br>
     <a href="https://www.n-k.org.il/" target="_blank" rel="noopener">n-k.org.il</a>
   </footer>
 
@@ -385,10 +385,6 @@ async function requestGreeting(payload){
       userId, chatId
     };
     requestGreeting(lastPayload);
-  });
-
-  document.getElementById('againBtn').addEventListener('click', function(){
-    if(lastPayload) requestGreeting(lastPayload);
   });
 
   document.getElementById('copyBtn').addEventListener('click', function(){
