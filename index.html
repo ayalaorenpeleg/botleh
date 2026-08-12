@@ -260,6 +260,16 @@
       </div>
 
       <div class="field">
+        <label for="recipientGender">מגדר מושא הברכה</label>
+        <select id="recipientGender" required>
+          <option value="" disabled selected>בחרי אפשרות</option>
+          <option value="זכר">זכר</option>
+          <option value="נקבה">נקבה</option>
+          <option value="רבים או אחר">רבים או אחר</option>
+        </select>
+      </div>
+
+      <div class="field">
         <label for="relationship">הקשר בינך למושא הברכה</label>
         <input type="text" id="relationship" placeholder="לדוגמה: בן שלי, בת זוג, ידיד" required>
       </div>
@@ -272,6 +282,16 @@
       <div class="field">
         <label for="senderName">השם שלך - חתימה על הברכה</label>
         <input type="text" id="senderName" placeholder="לדוגמה: אמא" required>
+      </div>
+
+      <div class="field">
+        <label for="senderGender">מגדר המברך/ת</label>
+        <select id="senderGender" required>
+          <option value="" disabled selected>בחרי אפשרות</option>
+          <option value="זכר">זכר</option>
+          <option value="נקבה">נקבה</option>
+          <option value="רבים או אחר">רבים או אחר</option>
+        </select>
       </div>
 
       <button type="submit" class="submit" id="submitBtn">צרי לי ברכה ✨</button>
@@ -379,9 +399,11 @@ async function requestGreeting(payload){
     lastPayload = {
       eventType: document.getElementById('eventType').value,
       recipientName: document.getElementById('recipientName').value.trim(),
+      recipientGender: document.getElementById('recipientGender').value,
       relationship: document.getElementById('relationship').value.trim(),
       personalDetail: document.getElementById('personalDetail').value.trim(),
       senderName: document.getElementById('senderName').value.trim(),
+      senderGender: document.getElementById('senderGender').value,
       userId, chatId
     };
     requestGreeting(lastPayload);
