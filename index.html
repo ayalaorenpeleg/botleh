@@ -305,6 +305,7 @@
         <div class="result-text" id="resultText"></div>
         <div class="result-actions">
           <button type="button" class="btn-secondary btn-small" id="copyBtn">העתקי טקסט</button>
+          <button type="button" class="btn-secondary btn-small" id="againBtn">נסי שוב</button>
         </div>
       </div>
     </div>
@@ -416,6 +417,10 @@ async function requestGreeting(payload){
       btn.textContent = 'הועתק ✓';
       setTimeout(function(){ btn.textContent = original; }, 1600);
     });
+  });
+
+  document.getElementById('againBtn').addEventListener('click', function(){
+    if(lastPayload) requestGreeting(lastPayload);
   });
 </script>
 </body>
